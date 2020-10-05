@@ -1,0 +1,75 @@
+{
+    "type": "Microsoft.VirtualMachineImages",
+    "apiVersion": "2019-05-01-preview",
+    "location": "westus2",
+    "dependsOn": [],
+    "tags": {
+        "imagebuilderTemplate": "AzureImageBuilderSIG",
+        "userIdentity": "enabled"
+    },
+    "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+            "/subscriptions/ea0136ce-8872-4c39-9d70-f5bc45f8a600/resourcegroups/mm-aiblnx-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aibBuiUserId1597270136": {}
+        }
+    },
+    "properties": {
+        "buildTimeoutInMinutes" : 80,
+        "vmProfile": {
+            "vmSize": "Standard_D2s_v3",
+            "osDiskSizeGB": 30
+        },
+        "source": {
+            "type": "PlatformImage",
+            "publisher": "OpenLogic",
+            "offer": "CentOS",
+            "sku": "7_8",
+            "version": "latest"
+        },
+        "customize": [
+            {
+                "type": "Shell",
+                "name": "InstallUpgrades",
+                "inline": [
+                    "sudo yum update -y"
+                ]
+            },
+            {
+                "type": "Shell",
+                "name": "RunScriptFromSource",
+                "scriptUri": "https://raw.githubusercontent.com/mmcsa/mmfta-aib-linux/master/customizeScript.sh"
+            },
+
+            {
+                "type": "File",
+                "name": "downloadBuildArtifacts",
+                "sourceUri": "https://raw.githubusercontent.com/mmcsa/mmfta-aib-linux/master/exampleArtifacts/index.html",
+                "destination":"/tmp/index.html"
+            },
+
+            {
+                "type": "Shell",
+                "name": "setupBuildPath",
+                "inline": [
+                    "sudo mkdir /buildArtifacts",
+                    "sudo cp /tmp/index.html /buildArtifacts/index.html"
+                ]
+            }
+        ],
+        "distribute": [
+            {   
+                "type": "SharedImage",
+                "galleryImageId": "/subscriptions/ea0136ce-8872-4c39-9d70-f5bc45f8a600/resourceGroups/mm-aiblnx-rg/providers/Microsoft.Compute/galleries/mmaiblnxsigw2/images/CentOS_78g2_images",
+                "runOutputName": "cent78SigRo",
+                "artifactTags": {
+                    "source": "azureVmImageBuilder",
+                    "baseosimg": "centos78"
+                },
+                "replicationRegions": [
+                    "westus2",
+                    "westus"
+                ]
+            }
+        ]
+    }
+}
