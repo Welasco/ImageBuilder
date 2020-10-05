@@ -145,20 +145,10 @@ az resource create \
 az resource invoke-action \
      --resource-group $sigResourceGroup \
      --resource-type  Microsoft.VirtualMachineImages/imageTemplates \
-     -n helloImageTemplateforSIG01 \
+     -n CentOS82ImageTemplate \
      --action Run 
 
 # wait minimum of 15mins (this includes replication time to both regions)
-
-# start the image build
-
-az resource invoke-action \
-     --resource-group $imageResourceGroup \
-     --resource-type  Microsoft.VirtualMachineImages/imageTemplates \
-     -n VWShelloImageTemplateLinux01 \
-     --action Run 
-
-# wait approx 15mins
 
 ###################################################################################################################
 # Step 7 : Create the VM
