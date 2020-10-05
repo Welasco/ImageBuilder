@@ -129,7 +129,7 @@ sed -i -e "s%<imgBuilderId>%$imgBuilderId%g" helloImageTemplateforSIG.json
 # },
 
 ###################################################################################################################
-# Step 4 : Create the Image
+# Step 6 : Create the Image
 #############################################################
 # submit the image confiuration to the VM Image Builder Service
 
@@ -161,7 +161,7 @@ az resource invoke-action \
 # wait approx 15mins
 
 ###################################################################################################################
-# Step 4 : Create the VM
+# Step 7 : Create the VM
 #############################################################
 # download the example and configure it with your vars
 
@@ -182,6 +182,17 @@ az vm create \
 # *******************************************************
 # **            This VM was built from the:            **
 # ...
+
+
+###################################################################################################################
+# Step 8 : Download scripts for reference
+#############################################################
+curl https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/quickquickstarts/customizeScript.sh -o customizeScript.sh
+curl https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/quickquickstarts/customizeScript2.sh -o customizeScript2.sh
+curl https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/quickquickstarts/exampleArtifacts/buildArtifacts/index.html -o index.html
+
+
+
 
 ###################################################################################################################
 # Step 5 : Clean up
