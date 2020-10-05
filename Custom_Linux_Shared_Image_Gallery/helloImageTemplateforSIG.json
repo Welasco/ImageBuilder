@@ -40,7 +40,7 @@
                 "runOutputName": "cent82SigRo",
                 "artifactTags": {
                     "source": "azureVmImageBuilder",
-                    "baseosimg": "ubuntu1804"
+                    "baseosimg": "centos82"
                 },
                 "replicationRegions": [
                   "westus2"

@@ -138,7 +138,7 @@ az resource create \
     --properties @helloImageTemplateforSIG.json \
     --is-full-object \
     --resource-type Microsoft.VirtualMachineImages/imageTemplates \
-    -n helloImageTemplateforSIG01
+    -n CentOS82ImageTemplate
 
 # start the image build
 
