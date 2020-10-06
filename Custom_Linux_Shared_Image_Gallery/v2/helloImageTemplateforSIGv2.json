@@ -30,7 +30,7 @@
             {
                 "type": "Shell",
                 "name": "RunScriptFromSource",
-                "scriptUri": "https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery//v2/vwscriptv2.sh"
+                "scriptUri": "https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery/v2/vwscriptv2.sh"
             }
         ],
         "distribute": [
