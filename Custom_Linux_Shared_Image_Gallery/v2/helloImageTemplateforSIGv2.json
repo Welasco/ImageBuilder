@@ -1,0 +1,51 @@
+{
+    "type": "Microsoft.VirtualMachineImages",
+    "apiVersion": "2019-05-01-preview",
+    "location": "westus2",
+    "dependsOn": [],
+    "tags": {
+        "imagebuilderTemplate": "AzureImageBuilderSIG",
+        "userIdentity": "enabled"
+    },
+    "identity": {
+        "type": "UserAssigned",
+            "userAssignedIdentities": {
+                "/subscriptions/4b4ea128-f1cf-47ab-8468-4e9e2ece06e6/resourcegroups/AIBSIG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/VWSAIBSIGBuiUserId": {}
+            }
+    },
+    "properties": {
+        "buildTimeoutInMinutes" : 80,
+        "vmProfile": {
+            "vmSize": "Standard_D1_v2",
+            "osDiskSizeGB": 30
+        },
+        "source": {
+            "type": "PlatformImage",
+            "publisher": "OpenLogic",
+            "offer": "CentOS",
+            "sku": "8_2",
+            "version": "latest"
+        },
+        "customize": [
+            {
+                "type": "Shell",
+                "name": "RunScriptFromSource",
+                "scriptUri": "https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery//v2/vwscriptv2.sh"
+            }
+        ],
+        "distribute": [
+            {   
+                "type": "SharedImage",
+                "galleryImageId": "/subscriptions/4b4ea128-f1cf-47ab-8468-4e9e2ece06e6/resourceGroups/AIBSIG/providers/Microsoft.Compute/galleries/VWSSIG/images/CentOS_82_images",
+                "runOutputName": "cent82SigRo",
+                "artifactTags": {
+                    "source": "azureVmImageBuilder",
+                    "baseosimg": "centos82"
+                },
+                "replicationRegions": [
+                  "westus2"
+                ]
+            }
+        ]
+    }
+}
