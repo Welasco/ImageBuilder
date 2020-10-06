@@ -1,7 +1,13 @@
 #!/bin/bash -e
 # add epel repo & update
+echo "##############################################################"
+echo "###### Installing epel-release and updating modules ##########"
+echo "##############################################################"
 sudo yum install -y epel-release && sudo yum update -y
 
+echo "##############################################################"
+echo "################### Installing Azure CLI #####################"
+echo "##############################################################"
 # Add repo key for az cli
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
 
@@ -16,20 +22,32 @@ gpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/azu
 # install az cli
 sudo yum install -y azure-cli
 
+echo "##############################################################"
+echo "################### Installing singularity ###################"
+echo "##############################################################"
 #install singularity
 sudo yum install -y singularity
 
 #install python3
 # sudo yum install python3
 
+echo "##############################################################"
+echo "################### Installing R #############################"
+echo "##############################################################"
 #install R
 sudo dnf install epel-release
 sudo dnf config-manager --set-enabled PowerTools
 sudo yum install -y R
 
+echo "##############################################################"
+echo "################### Installing SAMTools ######################"
+echo "##############################################################"
 #install SAMTools 
 sudo yum install -y samtools
 
+echo "##############################################################"
+echo "################### Installing AzCopy ########################"
+echo "##############################################################"
 # Install AzCopy
 wget https://aka.ms/downloadazcopy-v10-linux
 tar -xvf downloadazcopy-v10-linux
@@ -37,9 +55,15 @@ sudo cp azcopy_linux_amd64_10.6.0/azcopy /usr/bin/
 sudo chmod 755 /usr/bin/azcopy
 rm -rf downloadazcopy-v10-linux azcopy_linux_amd64_10.6.0/
 
+echo "##############################################################"
+echo "################### Installing tmux ##########################"
+echo "##############################################################"
 #tmux
 sudo yum install -y tmux
 
+echo "##############################################################"
+echo "################### Installing Java ##########################"
+echo "##############################################################"
 #java 11
 sudo yum install -y java-11-openjdk
 sudo yum install -y java-1.8.0-openjdk
@@ -58,11 +82,14 @@ sudo yum install -y java-1.8.0-openjdk
 # export JRE_HOME=/usr/lib/jvm/java-11-openjdk-11.0.8.10-0.el8_2.x86_64/bin/java
 # export PATH=$PATH:/usr/lib/jvm/java-11-openjdk-11.0.8.10-0.el8_2.x86_64/bin
 
+echo "##############################################################"
+echo "## Installing environment-modules and loading java modules ###"
+echo "##############################################################"
 # environment-modules
 sudo yum install environment-modules -y
 # source /etc/profile.d/modules.sh
 mkdir /etc/modulefiles/java
-wget -O /etc/modulefiles/java/11 https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery/v2/8
+wget -O /etc/modulefiles/java/8 https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery/v2/8
 wget -O /etc/modulefiles/java/11 https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery/v2/11
 
 
@@ -70,7 +97,9 @@ wget -O /etc/modulefiles/java/11 https://raw.githubusercontent.com/Welasco/Image
 # module load java/11
 # module unload java/11
 
-
+echo "##############################################################"
+echo "######################## Updating MOTD #######################"
+echo "##############################################################"
 # Add preview banner to MOTD
 sudo tee -a /etc/motd > /dev/null <<'EOF'
 *******************************************************
