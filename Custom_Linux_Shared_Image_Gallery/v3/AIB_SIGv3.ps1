@@ -128,68 +128,41 @@ sed -i -e "s%<imgBuilderId>%$imgBuilderId%g" helloImageTemplateforSIG.json
 #         "version": "latest"
 # },
 
+####################################################################################################################
+
+# Variables
+
+sigResourceGroup=AIBSIG
+location=westus2
+subscriptionID=$(az account show | grep id | tr -d '",' | cut -c7-)
+sigName=VWSSIG
+imageDefName=CentOS_82_images
+runOutputName=cent82SigRo
+imageTemplateName=CentOS82ImageTemplatev3
+
 ###################################################################################################################
 # Step 6 : Create the Image
 #############################################################
 # submit the image confiuration to the VM Image Builder Service
 
-imageTemplateName=CentOS82ImageTemplate
-
 az resource create \
     --resource-group $sigResourceGroup \
-    --properties @helloImageTemplateforSIG.json \
+    --properties @helloImageTemplateforSIGv3.json \
     --is-full-object \
     --resource-type Microsoft.VirtualMachineImages/imageTemplates \
-    -n CentOS82ImageTemplate
+    -n $imageTemplateName
 
 # Delete 
-az resource Delete \
-    --resource-group $sigResourceGroup \
-    --resource-type Microsoft.VirtualMachineImages/imageTemplates \
-    -n CentOS82ImageTemplate 
-
-# Get resource details
-az resource show \
-    --ids "/subscriptions/$subscriptionId/resourcegroups/$sigResourceGroup/providers/Microsoft.VirtualMachineImages/imageTemplates/$imageTemplateName/runOutputs/$runOutputName"  | grep artifactUri
-az resource show \
-    --ids "/subscriptions/$subscriptionId/resourcegroups/$sigResourceGroup/providers/Microsoft.VirtualMachineImages/imageTemplates/$imageTemplateName/runOutputs/$runOutputName"
-az resource show \
-    --ids "/subscriptions/$subscriptionId/resourcegroups/$sigResourceGroup/providers/Microsoft.VirtualMachineImages/imageTemplates/$imageTemplateName"
-az resource show --ids /subscriptions/4b4ea128-f1cf-47ab-8468-4e9e2ece06e6/resourceGroups/AIBSIG/providers/Microsoft.VirtualMachineImages/imageTemplates/CentOS82ImageTemplate
-# start the image build
+# az resource Delete \
+#     --resource-group $sigResourceGroup \
+#     --resource-type Microsoft.VirtualMachineImages/imageTemplates \
+#     -n $imageTemplateName 
 
 az resource invoke-action \
      --resource-group $sigResourceGroup \
      --resource-type  Microsoft.VirtualMachineImages/imageTemplates \
-     -n CentOS82ImageTemplate \
+     -n $imageTemplateName \
      --action Run 
-
-#############################################################################
-#############################################################################
-# vwscript2
-az resource create \
-    --resource-group $sigResourceGroup \
-    --properties @helloImageTemplateforSIG.json \
-    --is-full-object \
-    --resource-type Microsoft.VirtualMachineImages/imageTemplates \
-    -n CentOS82ImageTemplate2
-
-# Delete vwsscript2
-az resource Delete \
-    --resource-group $sigResourceGroup \
-    --resource-type Microsoft.VirtualMachineImages/imageTemplates \
-    -n CentOS82ImageTemplate2
-
-# start the image build
-
-az resource invoke-action \
-     --resource-group $sigResourceGroup \
-     --resource-type  Microsoft.VirtualMachineImages/imageTemplates \
-     -n CentOS82ImageTemplate \
-     --action Run 
-#############################################################################
-#############################################################################
-
 
 # wait minimum of 15mins (this includes replication time to both regions)
 
@@ -216,16 +189,12 @@ az vm create \
 # **            This VM was built from the:            **
 # ...
 
-
 ###################################################################################################################
 # Step 8 : Download scripts for reference
 #############################################################
 curl https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/quickquickstarts/customizeScript.sh -o customizeScript.sh
 curl https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/quickquickstarts/customizeScript2.sh -o customizeScript2.sh
 curl https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/quickquickstarts/exampleArtifacts/buildArtifacts/index.html -o index.html
-
-
-
 
 ###################################################################################################################
 # Step 9 : Clean up
