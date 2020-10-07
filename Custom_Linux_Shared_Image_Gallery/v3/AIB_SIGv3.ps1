@@ -156,7 +156,7 @@ az resource create \
 # az resource Delete \
 #     --resource-group $sigResourceGroup \
 #     --resource-type Microsoft.VirtualMachineImages/imageTemplates \
-#     -n $imageTemplateName 
+#     -n $imageTemplateName
 
 az resource invoke-action \
      --resource-group $sigResourceGroup \

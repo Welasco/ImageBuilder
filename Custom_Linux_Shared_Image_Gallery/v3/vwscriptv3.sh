@@ -112,8 +112,8 @@ echo "##############################################################"
 sudo yum install environment-modules -y
 # source /etc/profile.d/modules.sh
 mkdir /etc/modulefiles/java
-wget -O /etc/modulefiles/java/8 https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery/v2/8
-wget -O /etc/modulefiles/java/11 https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery/v2/11
+wget -O /etc/modulefiles/java/8 https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery/v3/8
+wget -O /etc/modulefiles/java/11 https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery/v3/11
 
 
 # module avail
