@@ -51,9 +51,9 @@ echo "##############################################################"
 # Install AzCopy
 wget https://aka.ms/downloadazcopy-v10-linux
 tar -xvf downloadazcopy-v10-linux
-sudo cp azcopy_linux_amd64_10.6.0/azcopy /usr/bin/
+sudo cp azcopy_linux_amd64_10.6.1/azcopy /usr/bin/
 sudo chmod 755 /usr/bin/azcopy
-rm -rf downloadazcopy-v10-linux azcopy_linux_amd64_10.6.0/
+rm -rf downloadazcopy-v10-linux azcopy_linux_amd64_10.6.1/
 
 echo "##############################################################"
 echo "################### Installing tmux ##########################"
