@@ -81,18 +81,8 @@ sudo yum install -y java-11-openjdk
 sudo yum install -y java-1.8.0-openjdk
 
 # Comments
-# /usr/lib/jvm/java-11-openjdk-11.0.8.10-0.el8_2.x86_64/bin/java
-# /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.265.b01-0.el8_2.x86_64/bin/java
 # which java
 # whereis java
-
-# export JAVA_HOME=/opt/jdk1.8.0_20/bin/java
-# export JRE_HOME=/opt/jdk1.8.0_20/jre/bin/java
-# export PATH=$PATH:$HOME/bin:JAVA_HOME:JRE_HOME
-
-# export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.8.10-0.el8_2.x86_64/bin/java
-# export JRE_HOME=/usr/lib/jvm/java-11-openjdk-11.0.8.10-0.el8_2.x86_64/bin/java
-# export PATH=$PATH:/usr/lib/jvm/java-11-openjdk-11.0.8.10-0.el8_2.x86_64/bin
 
 echo "##############################################################"
 echo "#################### Installing htop #########################"
@@ -120,15 +110,63 @@ sudo mv nextflow /usr/bin/
 sudo chmod 755 /usr/bin/nextflow
 
 echo "##############################################################"
-echo "## Installing environment-modules and loading java modules ###"
+echo "############# Installing environment-modules  ################"
 echo "##############################################################"
 # environment-modules
 sudo yum install environment-modules -y
 # source /etc/profile.d/modules.sh
-# *** Needs beter handler for java version
 sudo mkdir /etc/modulefiles/java
-sudo wget -O /etc/modulefiles/java/8 https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery/v3/8
-sudo wget -O /etc/modulefiles/java/11 https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Custom_Linux_Shared_Image_Gallery/v3/11
+
+echo "##############################################################"
+echo "############ Creating Java environment-modules  ##############"
+echo "##############################################################"
+# Creating Java 8 environment-modules
+JAVAMODULESFILE8="/etc/modulefiles/java/8"
+JAVAVERSION8="Java 8"
+JAVA8FOLDER=$(ls -d /usr/lib/jvm/java-1.8.0-openjdk-*)/bin
+JAVA8FILE=$(ls -d /usr/lib/jvm/java-1.8.0-openjdk-*)/bin/java
+
+sudo tee -a $JAVAMODULESFILE8 > /dev/null <<'EOF'
+#%Module1.0
+proc ModulesHelp { } {
+global dotversion
+
+puts stderr "\tJAVAVERSION"
+}
+
+module-whatis "JAVAVERSION"
+prepend-path PATH FOLDERPATH
+setenv JAVA_HOME FILEPATH
+setenv JRE_HOME FILEPATH
+EOF
+
+sudo sed -i "s@JAVAVERSION@$JAVAVERSION8@g" $JAVAMODULESFILE8
+sudo sed -i "s@FOLDERPATH@$JAVA8FOLDER@g" $JAVAMODULESFILE8
+sudo sed -i "s@FILEPATH@$JAVA8FILE@g" $JAVAMODULESFILE8
+
+# Creating Java 11 environment-modules
+JAVAMODULESFILE11="/etc/modulefiles/java/11"
+JAVAVERSION11="Java 11"
+JAVA11FOLDER=$(ls -d /usr/lib/jvm/java-11-openjdk-11*)/bin
+JAVA11FILE=$(ls -d /usr/lib/jvm/java-11-openjdk-11*)/bin/java
+
+sudo tee -a $JAVAMODULESFILE11 > /dev/null <<'EOF'
+#%Module1.0
+proc ModulesHelp { } {
+global dotversion
+
+puts stderr "\tJAVAVERSION"
+}
+
+module-whatis "JAVAVERSION"
+prepend-path PATH FOLDERPATH
+setenv JAVA_HOME FILEPATH
+setenv JRE_HOME FILEPATH
+EOF
+
+sudo sed -i "s@JAVAVERSION@$JAVAVERSION11@g" $JAVAMODULESFILE11
+sudo sed -i "s@FOLDERPATH@$JAVA11FOLDER@g" $JAVAMODULESFILE11
+sudo sed -i "s@FILEPATH@$JAVA11FILE@g" $JAVAMODULESFILE11
 
 
 # module avail
