@@ -41,10 +41,10 @@ subscriptionID=$(az account show | grep id | tr -d '",' | cut -c7-)
 sigName=VWSSIG
 
 # name of the image definition to be created, e.g. ProdImages
-imageDefName=CentOS_78_images
+imageDefName='aibWinImage'
 
 # image distribution metadata reference name
-runOutputName=cent78SigRo
+runOutputName='aibWindows'
 
 # create resource group
 az group create -n $sigResourceGroup -l $location
@@ -82,6 +82,17 @@ az role assignment create \
     --role $imageRoleDefName \
     --scope /subscriptions/$subscriptionID/resourceGroups/$sigResourceGroup
 
+az role assignment create \
+    --assignee $imgBuilderCliId \
+    --role $imageRoleDefName \
+    --scope /subscriptions/$subscriptionID/resourceGroups/$sigResourceGroup
+
+# Contributor role # Message: RoleDefinitionLimitExceeded Role definition limit exceeded. No more role definitions can be created.
+az role assignment create \
+    --assignee $imgBuilderCliId \
+    --role 'Contributor' \
+    --scope /subscriptions/$subscriptionID/resourceGroups/$sigResourceGroup
+
 ###################################################################################################################
 # Step 4: Create Shared Image Gallery
 #############################################################
@@ -96,37 +107,26 @@ az sig image-definition create \
    -g $sigResourceGroup \
    --gallery-name $sigName \
    --gallery-image-definition $imageDefName \
-   --publisher VWS \
-   --offer cent78 \
-   --sku 7.8-latest \
-   --os-type Linux
+   --publisher MicrosoftWindowsServer \
+   --offer WindowsServer \
+   --sku 2022-datacenter-g2 \
+   --os-type Windows
 
 ###################################################################################################################
 # Step 5: Modify HelloImage Example
 #############################################################
 # download the example and configure it with your vars
 
-curl https://raw.githubusercontent.com/danielsollondon/azvmimagebuilder/master/quickquickstarts/1_Creating_a_Custom_Linux_Shared_Image_Gallery_Image/helloImageTemplateforSIG.json -o helloImageTemplateforSIG.json
+curl https://raw.githubusercontent.com/azure/azvmimagebuilder/master/quickquickstarts/0_Creating_a_Custom_Windows_Managed_Image/helloImageTemplateWin.json -o helloImageTemplateWin.json
 
-sed -i -e "s/<subscriptionID>/$subscriptionID/g" helloImageTemplateforSIG.json
-sed -i -e "s/<rgName>/$sigResourceGroup/g" helloImageTemplateforSIG.json
-sed -i -e "s/<imageDefName>/$imageDefName/g" helloImageTemplateforSIG.json
-sed -i -e "s/<sharedImageGalName>/$sigName/g" helloImageTemplateforSIG.json
+sed -i -e "s%<subscriptionID>%$subscriptionID%g" helloImageTemplateWin.json
+sed -i -e "s%<rgName>%$sigResourceGroup%g" helloImageTemplateWin.json
+sed -i -e "s%<region>%$location%g" helloImageTemplateWin.json
+sed -i -e "s%<imageName>%$imageDefName%g" helloImageTemplateWin.json
+sed -i -e "s%<runOutputName>%$runOutputName%g" helloImageTemplateWin.json
+sed -i -e "s%<imgBuilderId>%$imgBuilderId%g" helloImageTemplateWin.json
 
-sed -i -e "s/<region1>/$location/g" helloImageTemplateforSIG.json
-# sed -i -e "s/<region2>/$additionalregion/g" helloImageTemplateforSIG.json
-sed -i -e "s/<runOutputName>/$runOutputName/g" helloImageTemplateforSIG.json
 
-sed -i -e "s%<imgBuilderId>%$imgBuilderId%g" helloImageTemplateforSIG.json
-
-# *** Don't forget to change the json for your desired image:
-# "source": {
-#     "type": "PlatformImage",
-#         "publisher": "OpenLogic",
-#         "offer": "CentOS",
-#         "sku": "8_2",
-#         "version": "latest"
-# },
 
 ####################################################################################################################
 
@@ -136,9 +136,9 @@ sigResourceGroup=AIBSIG
 location=westus2
 subscriptionID=$(az account show | grep id | tr -d '",' | cut -c7-)
 sigName=VWSSIG
-imageDefName=CentOS_78_images
-runOutputName=cent78SigRo
-imageTemplateName=CentOS78ImageTemplatev4
+imageDefName=aibWinImage
+runOutputName=aibWindows
+imageTemplateName=aibWindowsImageTemplatev1
 
 ###################################################################################################################
 # Step 6 : Create the Image
@@ -147,12 +147,12 @@ imageTemplateName=CentOS78ImageTemplatev4
 
 az resource create \
     --resource-group $sigResourceGroup \
-    --properties @helloImageTemplateforSIGv4.json \
+    --properties @helloImageTemplateWin.json \
     --is-full-object \
     --resource-type Microsoft.VirtualMachineImages/imageTemplates \
     -n $imageTemplateName
 
-# Delete 
+# Delete
 # az resource Delete \
 #     --resource-group $sigResourceGroup \
 #     --resource-type Microsoft.VirtualMachineImages/imageTemplates \
@@ -162,7 +162,7 @@ az resource invoke-action \
      --resource-group $sigResourceGroup \
      --resource-type  Microsoft.VirtualMachineImages/imageTemplates \
      -n $imageTemplateName \
-     --action Run 
+     --action Run
 
 # wait minimum of 15mins (this includes replication time to both regions)
 

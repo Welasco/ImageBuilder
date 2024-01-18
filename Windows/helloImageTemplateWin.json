@@ -1,0 +1,59 @@
+{
+    "type": "Microsoft.VirtualMachineImages/imageTemplates",
+    "apiVersion": "2020-02-14",
+    "location": "westus2",
+    "dependsOn": [],
+    "tags": {
+        "imagebuilderTemplate": "windows2022",
+        "userIdentity": "enabled"
+    },
+    "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+            "/subscriptions/4b4ea128-f1cf-47ab-8468-4e9e2ece06e6/resourcegroups/AIBSIG/providers/Microsoft.ManagedIdentity/userAssignedIdentities/VWSAIBSIGBuiUserId": {}
+        }
+    },
+    "properties": {
+        "buildTimeoutInMinutes": 100,
+        "vmProfile": {
+            "vmSize": "Standard_D2_v2",
+            "osDiskSizeGB": 127
+        },
+        "source": {
+            "type": "PlatformImage",
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "2022-datacenter-g2",
+            "version": "latest"
+        },
+        "customize": [
+            {
+                "type": "PowerShell",
+                "name": "CreateBuildPath",
+                "runElevated": false,
+                "scriptUri": "https://raw.githubusercontent.com/Welasco/ImageBuilder/master/Windows/testPsScript.ps1"
+            },
+            {
+                "type": "WindowsUpdate",
+                "searchCriteria": "IsInstalled=0",
+                "filters": [
+                    "exclude:$_.Title -like '*Preview*'",
+                    "include:$true"
+                ],
+                "updateLimit": 20
+            }
+        ],
+        "distribute": [
+            {
+                "type": "ManagedImage",
+                "imageId": "/subscriptions/4b4ea128-f1cf-47ab-8468-4e9e2ece06e6/resourceGroups/AIBSIG/providers/Microsoft.Compute/images/aibWinImage",
+                "location": "westus2",
+                "runOutputName": "aibWindows",
+                "artifactTags": {
+                    "source": "azVmImageBuilder",
+                    "baseosimg": "windows2019"
+                }
+            }
+        ]
+    }
+}
